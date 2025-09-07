@@ -1,5 +1,6 @@
 from typing import List, Dict, Iterable
 from logging import Logger, DEBUG
+from urllib.parse import urljoin
 
 import httpx
 
@@ -23,7 +24,7 @@ class MangaPagination(Pagination):
         
         super().__init__()
         
-        self._load_page(1)
+        self._load_page(self.page_now)
           
     def _load_page(self, num):
         if num in self._cache and self.use_cache:
@@ -59,10 +60,10 @@ class MangaPagination(Pagination):
     def parse_page(soup: BeautifulSoup) -> List[MiniManga]:
         page_data: List[MiniManga] = []
         
-        for article in soup.find_all("div", class_="gallery"):
+        for article in find_with_raise(soup, "div", id="dle-content").find_all("div", class_="gallery"):
             title = article.get_text(strip=True)
             url = find_with_raise(article, 'a').get('href')
-            poster = find_with_raise(article, 'img').get('data-src')
+            poster = urljoin(Config.BASE_URL, find_with_raise(article, 'img').get('data-src'))
             
             if url is None: 
                 raise AttributeError("Атрибут href пустой или не найден")
@@ -105,7 +106,8 @@ class MangaSearch:
         logger.info(f"Была создана поптыка поиска манги автора {author}")
         result = MangaPagination(Config.FIND_WITH_AUTHOR.format(f"{author}", "{}"), cache, engine)
         return result
-    
+        
     @staticmethod
-    def find_popular(session: httpx.Client):
-        response = session.get("https://multi-manga.today/")
+    def default_find(cache = True, engine: str = Config.DEFAULT_ENGINE):
+        logger.info(f"Была создана поптыка поиска глобальной манги автора")
+        return MangaPagination(urljoin(Config.BASE_URL, "/page/{}/"), cache, engine)
