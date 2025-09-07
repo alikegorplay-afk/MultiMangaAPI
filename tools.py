@@ -8,3 +8,10 @@ def find_with_raise(soup: BeautifulSoup, *args, **kwargs):
         ))
     return result
 
+def find_all_with_raise(soup: BeautifulSoup, *args, **kwargs):
+    if (result := soup.find_all(*args, **kwargs)) is None:
+        raise AttributeError("Не был найден ни один атрибут{}{}".format(
+            ' <' + ', '.join(args) + '>' if args else '',
+            ' с параметрами ' + ', '.join([f"{k}: {v}" for k, v in kwargs.items()]) if kwargs else '' 
+        ))
+    return result

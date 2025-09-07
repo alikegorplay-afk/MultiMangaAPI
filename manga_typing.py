@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Callable
 from dataclasses import dataclass
-
 from abc import ABC, abstractmethod
+from urllib.parse import urljoin
 
 @dataclass(frozen=True)
 class MiniManga:
@@ -39,3 +39,9 @@ class Pagination(ABC):
     def _load_page(self, num: int):
         pass
     
+class Config:
+    BASE_URL = "https://multi-manga.today"
+    FIND_BY_QUOTE_URL = urljoin(BASE_URL, "/index.php?do=search&subaction=search&search_start={}&full_search=0&story={}")
+    FIND_WITH_GENRES = urljoin(BASE_URL, "/f/n.m.tags={}/sort=date/order=desc/page/{}/")
+    FIND_WITH_AUTHOR = urljoin(BASE_URL, "/xfsearch/autor/{}/page/{}/")
+    DEFAULT_ENGINE = 'html.parser'
