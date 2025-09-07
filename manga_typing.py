@@ -30,7 +30,6 @@ class Pagination(ABC):
     def select_page(self, num: int) -> List[MiniManga] | None:
         if not (0 < num <= self.max_page):
             return None
-        
         data = self._load_page(num)
         
         self.page_now = num

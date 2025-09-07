@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from bs4 import BeautifulSoup
 
 def find_with_raise(soup: BeautifulSoup, *args, **kwargs):
@@ -10,7 +8,3 @@ def find_with_raise(soup: BeautifulSoup, *args, **kwargs):
         ))
     return result
 
-
-def raise_more(attrs: Iterable, attr_type: type, error: BaseException):
-    if not all(isinstance(attr, attr_type) for attr in attrs):
-        raise error
